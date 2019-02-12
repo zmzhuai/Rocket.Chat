@@ -3,7 +3,7 @@ import { Tracker } from 'meteor/tracker';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 import { Session } from 'meteor/session';
-import { RoomManager, fireGlobalEvent, readMessage, RoomHistoryManager } from 'meteor/rocketchat:ui-utils';
+import { RoomManager, fireGlobalEvent, /* readMessage,*/RoomHistoryManager } from 'meteor/rocketchat:ui-utils';
 import { ChatSubscription } from 'meteor/rocketchat:models';
 import _ from 'underscore';
 
@@ -20,10 +20,11 @@ openRoom = function(type, name) {
 				return;
 			}
 
-			if (RoomManager.open(type + name).ready() !== true) {
-				BlazeLayout.render('main', { modal: RocketChat.Layout.isEmbedded(), center: 'loading' });
-				return;
-			}
+			BlazeLayout.render('main', { modal: RocketChat.Layout.isEmbedded(), center: 'roomContainer' });
+			// if (RoomManager.open(type + name).ready() !== true) {
+			// 	BlazeLayout.render('main', { modal: RocketChat.Layout.isEmbedded(), center: 'loading' });
+			// 	return;
+			// }
 			if (currentTracker) {
 				currentTracker = undefined;
 			}
@@ -57,26 +58,26 @@ openRoom = function(type, name) {
 				return;
 			}
 
-			const mainNode = document.querySelector('.main-content');
-			if (mainNode) {
-				for (const child of Array.from(mainNode.children)) {
-					if (child) { mainNode.removeChild(child); }
-				}
-				const roomDom = RoomManager.getDomOfRoom(type + name, room._id);
-				mainNode.appendChild(roomDom);
-				if (roomDom.classList.contains('room-container')) {
-					roomDom.querySelector('.messages-box > .wrapper').scrollTop = roomDom.oldScrollTop;
-				}
-			}
+			// const mainNode = document.querySelector('.main-content');
+			// if (mainNode) {
+			// 	for (const child of Array.from(mainNode.children)) {
+			// 		if (child) { mainNode.removeChild(child); }
+			// 	}
+			// 	const roomDom = RoomManager.getDomOfRoom(type + name, room._id);
+			// 	mainNode.appendChild(roomDom);
+			// 	if (roomDom.classList.contains('room-container')) {
+			// 		roomDom.querySelector('.messages-box > .wrapper').scrollTop = roomDom.oldScrollTop;
+			// 	}
+			// }
 
 			Session.set('openedRoom', room._id);
 			RoomManager.openedRoom = room._id;
 
 			fireGlobalEvent('room-opened', _.omit(room, 'usernames'));
 
-			Session.set('editRoomTitle', false);
+			// Session.set('editRoomTitle', false);
 			RoomManager.updateMentionsMarksOfRoom(type + name);
-			Meteor.setTimeout(() => readMessage.readNow(), 2000);
+			// Meteor.setTimeout(() => readMessage.readNow(), 2000);
 			// KonchatNotification.removeRoomNotification(params._id)
 			// update user's room subscription
 			const sub = ChatSubscription.findOne({ rid: room._id });

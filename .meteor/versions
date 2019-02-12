@@ -124,6 +124,7 @@ raix:handlebar-helpers@0.2.5
 raix:ui-dropped-event@0.0.7
 random@1.1.0
 rate-limit@1.0.9
+react-template-helper@0.2.11
 reactive-dict@1.2.1
 reactive-var@1.0.11
 reload@1.2.0
@@ -193,7 +194,6 @@ rocketchat:mailer@0.0.1
 rocketchat:mailmessages@0.0.1
 rocketchat:mapview@0.0.1
 rocketchat:markdown@0.0.2
-rocketchat:metrics@0.0.1
 rocketchat:mentions@0.0.1
 rocketchat:mentions-flextab@0.0.1
 rocketchat:message-action@0.0.1
@@ -202,6 +202,7 @@ rocketchat:message-mark-as-unread@0.0.1
 rocketchat:message-pin@0.0.1
 rocketchat:message-snippet@0.0.1
 rocketchat:message-star@0.0.1
+rocketchat:metrics@0.0.1
 rocketchat:migrations@0.0.1
 rocketchat:models@1.0.0
 rocketchat:monitoring@2.30.2_3

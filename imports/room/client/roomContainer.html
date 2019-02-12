@@ -1,0 +1,43 @@
+<template name="roomContainer">
+	<div class="dropzone">
+		<div class="dropzone-overlay background-transparent-darkest color-content-background-color">
+			<div class="background-transparent-darkest">
+				{{_ "Drop_to_upload_file"}}
+			</div>
+		</div>
+		<div class="main-content-flex">
+			<section class="messages-container flex-tab-main-content {{adminClass}}" id="{{windowId}}" aria-label="{{_ "Channel"}}">
+				{{# headerRoom}}
+					{{#with flexData}}
+						<div class="rc-header__block rc-header__block-action">
+							{{> RoomsActionTab}}
+						</div>
+					{{/with}}
+				{{/headerRoom}}
+				<div class="messages-container-wrapper">
+					<div class="messages-container-main">
+						<div class="messages-box {{#if selectable}}selectable{{/if}} {{messageViewMode}} {{hasLeader}}">
+							<div class="ticks-bar"></div>
+							<button class="new-message background-primary-action-color color-content-background-color not">
+								<i class="icon-down-big"></i>
+								{{_ "New_messages"}}
+							</button>
+							<div class="jump-recent background-component-color {{#unless hasMoreNext}}not{{/unless}}">
+								<button>{{_ "Jump_to_recent_messages"}} <i class="icon-level-down"></i></button>
+							</div>
+							<div class="wrapper {{#if hasMoreNext}}has-more-next{{/if}} {{hideUsername}} {{hideAvatar}}">
+								{{> React component=roomComponent }}
+							</div>
+						</div>
+						<footer class="footer border-component-color">
+							{{> messageBox messageboxData}}
+						</footer>
+					</div>
+					{{#with flexData}}
+						{{> contextualBar}}
+					{{/with}}
+				</div>
+			</section>
+		</div>
+	</div>
+</template>
