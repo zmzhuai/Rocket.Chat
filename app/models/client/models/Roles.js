@@ -7,7 +7,9 @@ Object.assign(Roles, {
 	findUsersInRole(name, scope, options) {
 		const role = this.findOne(name);
 		const roleScope = (role && role.scope) || 'Users';
+		console.log('roleScope ->', roleScope);
 		const model = Models[roleScope];
+		console.log('func', model.findUsersInRoles);
 		return model && model.findUsersInRoles && model.findUsersInRoles(name, scope, options);
 	},
 

@@ -30,6 +30,8 @@ Object.assign(Subscriptions, {
 			query.rid = scope;
 		}
 
+		console.log('query ->', query);
+
 		const subscriptions = this.find(query).fetch();
 
 		const users = _.compact(_.map(subscriptions, function(subscription) {

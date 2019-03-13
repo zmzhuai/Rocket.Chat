@@ -1,3 +1,4 @@
+import { Mongo } from 'meteor/mongo';
 import { Meteor } from 'meteor/meteor';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { FlowRouter } from 'meteor/kadira:flow-router';
@@ -6,8 +7,7 @@ import { t, handleError } from '/app/utils';
 import { Roles } from '/app/models';
 import { hasAllPermission } from '../hasPermission';
 import toastr from 'toastr';
-
-let _modal;
+import { modal } from '../../../../app/ui-utils/client/lib/modal';
 
 Template.permissionsRole.helpers({
 	role() {
@@ -43,12 +43,12 @@ Template.permissionsRole.helpers({
 	},
 
 	hasUsers() {
-		return Template.instance().usersInRole.get() && Template.instance().usersInRole.get().count() > 0;
+		return Template.instance().usersInRole.get() && Template.instance().usersInRoleTotal.get() > 0;
 	},
 
 	hasMore() {
 		const instance = Template.instance();
-		return instance.limit && instance.limit.get() <= instance.usersInRole.get().count();
+		return instance.limit && instance.limit.get() <= instance.usersInRoleTotal.get();
 	},
 
 	isLoading() {
@@ -97,7 +97,7 @@ Template.permissionsRole.helpers({
 					noMatchTemplate: Template.userSearchEmpty,
 					matchAll: true,
 					filter: {
-						exceptions: instance.usersInRole.get() && instance.usersInRole.get().fetch(),
+						exceptions: instance.usersInRole.get() && instance.usersInRole.get(),
 					},
 					selector(match) {
 						return {
@@ -113,12 +113,8 @@ Template.permissionsRole.helpers({
 
 Template.permissionsRole.events({
 	async 'click .remove-user'(e, instance) {
-		if (!_modal) {
-			const { modal } = await import('/app/ui-utils');
-			_modal = modal;
-		}
 		e.preventDefault();
-		_modal.open({
+		modal.open({
 			title: t('Are_you_sure'),
 			type: 'warning',
 			showCancelButton: true,
@@ -133,7 +129,7 @@ Template.permissionsRole.events({
 					return handleError(error);
 				}
 
-				_modal.open({
+				modal.open({
 					title: t('Removed'),
 					text: t('User_removed'),
 					type: 'success',
@@ -221,14 +217,28 @@ Template.permissionsRole.events({
 	},
 
 	'autocompleteselect input[name=room]'(event, template, doc) {
+		console.log('room chosed', doc);
 		template.searchRoom.set(doc._id);
 	},
 });
+
+const Subscriptions = new Mongo.Collection('rocketchat_subscription');
+const findUsersInRole = (roles, roomId) => {
+	const query = {
+		roles,
+	};
+
+	if (roomId) {
+		query.rid = roomId;
+	}
+	return Subscriptions.find(query);
+};
 
 Template.permissionsRole.onCreated(function() {
 	this.searchRoom = new ReactiveVar;
 	this.searchUsername = new ReactiveVar;
 	this.usersInRole = new ReactiveVar;
+	this.usersInRoleTotal = new ReactiveVar(0);
 	this.limit = new ReactiveVar(50);
 	this.ready = new ReactiveVar(true);
 	this.subscribe('roles', FlowRouter.getParam('name'));
@@ -243,10 +253,12 @@ Template.permissionsRole.onCreated(function() {
 		const subscription = this.subscribe('usersInRole', FlowRouter.getParam('name'), this.searchRoom.get(), limit);
 		this.ready.set(subscription.ready());
 
-		this.usersInRole.set(Roles.findUsersInRole(FlowRouter.getParam('name'), this.searchRoom.get(), {
+		const users = findUsersInRole(FlowRouter.getParam('name'), this.searchRoom.get(), {
 			sort: {
 				username: 1,
 			},
-		}));
+		});
+		this.usersInRole.set(users.fetch());
+		this.usersInRoleTotal.set(users.count());
 	});
 });
