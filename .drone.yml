@@ -4,11 +4,18 @@ name: default
 steps:
 - name: frontend
   image: ubuntu
+  environment:
+    TOOL_NODE_FLAGS: --max_old_space_size=3072
   commands:
     - apt update && apt install curl git python g++ build-essential bzip2 -y
     - curl https://install.meteor.com | sed s/--progress-bar/-sL/g | /bin/sh
     - ls -l
     - meteor npm install
+    - meteor npm run lint
+    - MONGO_URL=mongodb://localhost:27017 meteor npm run testunit
+    - mkdir /drone/build
+    - export METEOR_PROFILE=1000
+    - meteor build --server-only --directory --debug /drone/build
 
 services:
 - name: mongo
