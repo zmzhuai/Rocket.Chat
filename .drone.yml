@@ -55,7 +55,9 @@ steps:
   environment:
     TOOL_NODE_FLAGS: --max_old_space_size=3072
     METEOR_ALLOW_SUPERUSER: 'true'
+    HOME: /drone/home
   commands:
+    - export PATH="/drone/home/.meteor:$PATH"
     - meteor npm run lint
 
 - name: test
@@ -66,7 +68,9 @@ steps:
   environment:
     TOOL_NODE_FLAGS: --max_old_space_size=3072
     METEOR_ALLOW_SUPERUSER: 'true'
+    HOME: /drone/home
   commands:
+    - export PATH="/drone/home/.meteor:$PATH"
     - MONGO_URL=mongodb://mongo:27017 meteor npm run testunit
 
 - name: build
@@ -77,7 +81,9 @@ steps:
   environment:
     TOOL_NODE_FLAGS: --max_old_space_size=3072
     METEOR_ALLOW_SUPERUSER: 'true'
+    HOME: /drone/home
   commands:
+    - export PATH="/drone/home/.meteor:$PATH"
     - mkdir /drone/build
     - export METEOR_PROFILE=1000
     - meteor build --server-only --directory --debug /drone/build
