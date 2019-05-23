@@ -3,28 +3,28 @@ name: default
 
 steps:
 - name: build
-  image: ubuntu:18.04
+  image: ubuntu
   # environment:
   #   -
   commands:
-    - apt update && apt install curl git python g++ build-essential bzip2 -y
-    - export HOME=/drone
-    - export PATH="/drone/.meteor:$PATH"
-    - if [ ! -e "/drone/.meteor/meteor" ]; then export HOME=/drone; curl https://install.meteor.com | sed s/--progress-bar/-sL/g | /bin/sh; fi
-    - which meteor
-    - meteor npm install
-    - mkdir /drone/build
-    - meteor build --server-only --directory /drone/build
-    # - cp .docker/Dockerfile.local /drone/build/Dockerfile
+  - apt update && apt install curl git python g++ build-essential bzip2 -y
+  - export HOME=/drone
+  - export PATH="/drone/.meteor:$PATH"
+  - if [ ! -e "/drone/.meteor/meteor" ]; then export HOME=/drone; curl https://install.meteor.com | sed s/--progress-bar/-sL/g | /bin/sh; fi
+  - which meteor
+  - meteor npm install
+  - mkdir /drone/build
+  - meteor build --server-only --directory /drone/build
+  # - cp .docker/Dockerfile.local /drone/build/Dockerfile
 
 - name: Versions
   commands:
-    # - npm --versions
-    # - node -v
-    - meteor --version
-    - meteor npm --versions
-    - meteor node -v
-    - git version
+  # - npm --versions
+  # - node -v
+  - meteor --version
+  - meteor npm --versions
+  - meteor node -v
+  - git version
 
 # rebuild-cache:
 #   image: drillster/drone-volume-cache
