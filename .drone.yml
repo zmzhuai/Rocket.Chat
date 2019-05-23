@@ -30,7 +30,6 @@ steps:
     - meteor --version
     - meteor npm --versions
     - meteor node -v
-    - git version
 
 - name: npm install
   image: ubuntu
