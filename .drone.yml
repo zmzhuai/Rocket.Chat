@@ -3,11 +3,10 @@ name: default
 
 steps:
 - name: frontend
-  image: node
+  image: ubuntu
   commands:
-    - npm install
-    - npm run test
-    - npm run lint
+    - apt update && apt install -y git python build-essential
+    - ls -l
 
 services:
 - name: redis
