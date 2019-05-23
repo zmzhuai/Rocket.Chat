@@ -1,23 +1,16 @@
 kind: pipeline
 name: default
 
-
 steps:
 - name: frontend
-  image: ubuntu
+  image: node
   commands:
-    - apt update && apt install curl git python g++ build-essential bzip2 -y
-    - export HOME=/drone
-    - export PATH="/drone/.meteor:$PATH"
-    - if [ ! -e "/drone/.meteor/meteor" ]; then export HOME=/drone; curl https://install.meteor.com | sed s/--progress-bar/-sL/g | /bin/sh; fi
-    - which meteor
-    - meteor npm install
-    - mkdir /drone/build
-    - meteor build --server-only --directory /drone/build
+    - npm install
+    - npm run test
+    - npm run lint
 
-- name: versions
-  commands:
-  - meteor --version
-  - meteor npm --versions
-  - meteor node -v
-  - git version
+services:
+- name: redis
+  image: redis:latest
+  ports:
+  - 6379
