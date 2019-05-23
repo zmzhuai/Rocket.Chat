@@ -11,6 +11,9 @@ steps:
     - curl https://install.meteor.com | sed s/--progress-bar/-sL/g | /bin/sh
     - ls -l
     - meteor npm install
+    - cd packages/rocketchat-livechat/.app/
+    - meteor npm i
+    - cd -
     - meteor npm run lint
     - MONGO_URL=mongodb://localhost:27017 meteor npm run testunit
     - mkdir /drone/build
