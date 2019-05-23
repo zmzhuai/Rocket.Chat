@@ -74,7 +74,7 @@ steps:
     - MONGO_URL=mongodb://mongo:27017 meteor npm run testunit
 
 - name: build
-  image: ubuntu
+  image: node:8.11
   volumes:
   - name: meteor
     path: /drone/home
@@ -84,6 +84,7 @@ steps:
     HOME: /drone/home
   commands:
     - export PATH="/drone/home/.meteor:$PATH"
+    - apt update && apt install curl bzip2 -y
     - mkdir /drone/build
     - export METEOR_PROFILE=1000
     - meteor build --server-only --directory --debug /drone/build
