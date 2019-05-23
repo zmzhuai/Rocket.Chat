@@ -4,6 +4,9 @@ name: default
 steps:
 - name: install
   image: ubuntu
+  volumes:
+  - name: meteor
+    path: /drone/.meteor
   commands:
     - apt update && apt install curl bzip2 -y
     - export HOME=/drone
@@ -13,6 +16,9 @@ steps:
 
 - name: versions
   image: ubuntu
+  volumes:
+  - name: meteor
+    path: /drone/.meteor
   commands:
     - export HOME=/drone
     - export PATH="/drone/.meteor:$PATH"
@@ -23,6 +29,9 @@ steps:
 
 - name: frontend
   image: ubuntu
+  volumes:
+  - name: meteor
+    path: /drone/.meteor
   environment:
     TOOL_NODE_FLAGS: --max_old_space_size=3072
     METEOR_ALLOW_SUPERUSER: 'true'
@@ -43,3 +52,7 @@ services:
   image: mongo:3.2
   ports:
   - 27017
+
+volumes:
+- name: meteor
+  temp: {}
