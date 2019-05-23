@@ -6,22 +6,22 @@ steps:
   image: ubuntu
   volumes:
   - name: meteor
-    path: /drone/.meteor
+    path: /drone/home
   commands:
+    - export HOME=/drone/home
+    - export PATH="/drone/home/.meteor:$PATH"
     - apt update && apt install curl bzip2 -y
-    - export HOME=/drone
-    - export PATH="/drone/.meteor:$PATH"
-    - if [ ! -e "/drone/.meteor/meteor" ]; then export HOME=/drone; curl https://install.meteor.com | sed s/--progress-bar/-sL/g | /bin/sh; fi
+    - if [ ! -e "/drone/home/.meteor" ]; then export HOME=/drone/home; curl https://install.meteor.com | sed s/--progress-bar/-sL/g | /bin/sh; fi
     - curl https://install.meteor.com | sed s/--progress-bar/-sL/g | /bin/sh
 
 - name: versions
   image: ubuntu
   volumes:
   - name: meteor
-    path: /drone/.meteor
+    path: /drone/home
   commands:
-    - export HOME=/drone
-    - export PATH="/drone/.meteor:$PATH"
+    - export HOME=/drone/home
+    - export PATH="/drone/home/.meteor:$PATH"
     - ls -l
     - whoami
     - meteor -v
@@ -31,11 +31,13 @@ steps:
   image: ubuntu
   volumes:
   - name: meteor
-    path: /drone/.meteor
+    path: /drone/home
   environment:
     TOOL_NODE_FLAGS: --max_old_space_size=3072
     METEOR_ALLOW_SUPERUSER: 'true'
   commands:
+    - export HOME=/drone/home
+    - export PATH="/drone/home/.meteor:$PATH"
     - apt update && apt install curl git python g++ build-essential bzip2 -y
     - meteor npm install
     - cd packages/rocketchat-livechat/.app/
