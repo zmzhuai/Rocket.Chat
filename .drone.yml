@@ -5,11 +5,13 @@ steps:
 - name: frontend
   image: ubuntu
   commands:
-    - apt update && apt install -y git python build-essential
+    - apt update && apt install curl git python g++ build-essential bzip2 -y
+    - curl https://install.meteor.com | sed s/--progress-bar/-sL/g | /bin/sh
     - ls -l
+    - meteor npm install
 
 services:
-- name: redis
-  image: redis:latest
+- name: mongo
+  image: mongo:3.2
   ports:
-  - 6379
+  - 27017
