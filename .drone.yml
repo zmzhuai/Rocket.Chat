@@ -6,6 +6,7 @@ steps:
   image: ubuntu
   environment:
     TOOL_NODE_FLAGS: --max_old_space_size=3072
+    METEOR_ALLOW_SUPERUSER: 'true'
   commands:
     - apt update && apt install curl git python g++ build-essential bzip2 -y
     - curl https://install.meteor.com | sed s/--progress-bar/-sL/g | /bin/sh
