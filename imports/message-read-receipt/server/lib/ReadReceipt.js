@@ -53,7 +53,7 @@ export const ReadReceipt = {
 
 		// this will usually happens if the message sender is the only one on the room
 		const firstSubscription = Subscriptions.getMinimumLastSeenByRoomId(roomId);
-		if (message.unread && message.ts < firstSubscription.ls) {
+		if (message.unread && firstSubscription && message.ts < firstSubscription.ls) {
 			Messages.setAsReadById(message._id, firstSubscription.ls);
 		}
 
