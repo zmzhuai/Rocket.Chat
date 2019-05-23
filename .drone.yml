@@ -7,8 +7,9 @@ steps:
   volumes:
   - name: meteor
     path: /drone/home
+  environment:
+    HOME: /drone/home
   commands:
-    - export HOME=/drone/home
     - export PATH="/drone/home/.meteor:$PATH"
     - apt update && apt install curl bzip2 -y
     - if [ ! -e "/drone/home/.meteor" ]; then export HOME=/drone/home; curl https://install.meteor.com | sed s/--progress-bar/-sL/g | /bin/sh; fi
@@ -19,15 +20,33 @@ steps:
   volumes:
   - name: meteor
     path: /drone/home
+  environment:
+    METEOR_ALLOW_SUPERUSER: 'true'
+    HOME: /drone/home
   commands:
-    - export HOME=/drone/home
     - export PATH="/drone/home/.meteor:$PATH"
-    - ls -l
+    - pwd
     - whoami
     - meteor -v
     - meteor node -v
 
-- name: frontend
+- name: npm install
+  image: ubuntu
+  volumes:
+  - name: meteor
+    path: /drone/home
+  environment:
+    TOOL_NODE_FLAGS: --max_old_space_size=3072
+    METEOR_ALLOW_SUPERUSER: 'true'
+    HOME: /drone/home
+  commands:
+    - export PATH="/drone/home/.meteor:$PATH"
+    - apt update && apt install curl git python g++ build-essential bzip2 -y
+    - meteor npm install
+    - cd packages/rocketchat-livechat/.app/
+    - meteor npm install
+
+- name: lint
   image: ubuntu
   volumes:
   - name: meteor
@@ -36,15 +55,28 @@ steps:
     TOOL_NODE_FLAGS: --max_old_space_size=3072
     METEOR_ALLOW_SUPERUSER: 'true'
   commands:
-    - export HOME=/drone/home
-    - export PATH="/drone/home/.meteor:$PATH"
-    - apt update && apt install curl git python g++ build-essential bzip2 -y
-    - meteor npm install
-    - cd packages/rocketchat-livechat/.app/
-    - meteor npm install
-    - cd -
     - meteor npm run lint
+
+- name: test
+  image: ubuntu
+  volumes:
+  - name: meteor
+    path: /drone/home
+  environment:
+    TOOL_NODE_FLAGS: --max_old_space_size=3072
+    METEOR_ALLOW_SUPERUSER: 'true'
+  commands:
     - MONGO_URL=mongodb://mongo:27017 meteor npm run testunit
+
+- name: build
+  image: ubuntu
+  volumes:
+  - name: meteor
+    path: /drone/home
+  environment:
+    TOOL_NODE_FLAGS: --max_old_space_size=3072
+    METEOR_ALLOW_SUPERUSER: 'true'
+  commands:
     - mkdir /drone/build
     - export METEOR_PROFILE=1000
     - meteor build --server-only --directory --debug /drone/build
