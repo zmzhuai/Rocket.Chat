@@ -27,8 +27,10 @@ steps:
     - export PATH="/drone/home/.meteor:$PATH"
     - pwd
     - whoami
-    - meteor -v
+    - meteor --version
+    - meteor npm --versions
     - meteor node -v
+    - git version
 
 - name: npm install
   image: ubuntu
