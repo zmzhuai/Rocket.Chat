@@ -5,12 +5,17 @@ steps:
 - name: install
   image: ubuntu
   commands:
-    - apt update && apt install curl git python g++ build-essential bzip2 -y
+    - apt update && apt install curl bzip2 -y
+    - export HOME=/drone
+    - export PATH="/drone/.meteor:$PATH"
+    - if [ ! -e "/drone/.meteor/meteor" ]; then export HOME=/drone; curl https://install.meteor.com | sed s/--progress-bar/-sL/g | /bin/sh; fi
     - curl https://install.meteor.com | sed s/--progress-bar/-sL/g | /bin/sh
 
 - name: versions
   image: ubuntu
   commands:
+    - export HOME=/drone
+    - export PATH="/drone/.meteor:$PATH"
     - ls -l
     - whoami
     - meteor -v
@@ -22,6 +27,7 @@ steps:
     TOOL_NODE_FLAGS: --max_old_space_size=3072
     METEOR_ALLOW_SUPERUSER: 'true'
   commands:
+    - apt update && apt install curl git python g++ build-essential bzip2 -y
     - meteor npm install
     - cd packages/rocketchat-livechat/.app/
     - meteor npm install
