@@ -1,100 +1,54 @@
 kind: pipeline
-name: default
+name: Build
 
 steps:
 - name: install
   image: ubuntu
-  volumes:
-  - name: meteor
-    path: /drone/home
-  environment:
-    HOME: /drone/home
   commands:
-    - export PATH="/drone/home/.meteor:$PATH"
-    - apt update && apt install curl bzip2 -y
-    - if [ ! -e "/drone/home/.meteor" ]; then export HOME=/drone/home; curl https://install.meteor.com | sed s/--progress-bar/-sL/g | /bin/sh; fi
-    - curl https://install.meteor.com | sed s/--progress-bar/-sL/g | /bin/sh
+    - whoami
+    - sleep 60
+    - date
 
 - name: versions
   image: ubuntu
-  volumes:
-  - name: meteor
-    path: /drone/home
-  environment:
-    METEOR_ALLOW_SUPERUSER: 'true'
-    HOME: /drone/home
   commands:
-    - export PATH="/drone/home/.meteor:$PATH"
-    - pwd
     - whoami
-    - meteor --version
-    - meteor npm --versions
-    - meteor node -v
+    - sleep 50
+    - date
 
-- name: npm install
+- name: test 1
   image: ubuntu
-  volumes:
-  - name: meteor
-    path: /drone/home
-  environment:
-    TOOL_NODE_FLAGS: --max_old_space_size=3072
-    METEOR_ALLOW_SUPERUSER: 'true'
-    HOME: /drone/home
   commands:
-    - export PATH="/drone/home/.meteor:$PATH"
-    - apt update && apt install curl git python g++ build-essential bzip2 -y
-    - meteor npm install
-    - cd packages/rocketchat-livechat/.app/
-    - meteor npm install
+    - whomai
+    - sleep 40
+    - date
+  depends_on:
+    - versions
 
-- name: lint
+- name: test 2
   image: ubuntu
-  volumes:
-  - name: meteor
-    path: /drone/home
-  environment:
-    TOOL_NODE_FLAGS: --max_old_space_size=3072
-    METEOR_ALLOW_SUPERUSER: 'true'
-    HOME: /drone/home
   commands:
-    - export PATH="/drone/home/.meteor:$PATH"
-    - meteor npm run lint
+    - whoami
+    - sleep 120
+    - date
+  depends_on:
+    - versions
 
-- name: test
+- name: deploy
   image: ubuntu
-  volumes:
-  - name: meteor
-    path: /drone/home
-  environment:
-    TOOL_NODE_FLAGS: --max_old_space_size=3072
-    METEOR_ALLOW_SUPERUSER: 'true'
-    HOME: /drone/home
   commands:
-    - export PATH="/drone/home/.meteor:$PATH"
-    - MONGO_URL=mongodb://mongo:27017 meteor npm run testunit
+    - whoami
+    - sleep 20
+    - date
+  depends_on:
+    - test 1
+    - test 2
 
-- name: build
-  image: node:8.11
-  volumes:
-  - name: meteor
-    path: /drone/home
-  environment:
-    TOOL_NODE_FLAGS: --max_old_space_size=3072
-    METEOR_ALLOW_SUPERUSER: 'true'
-    HOME: /drone/home
+- name: docker image
+  image: ubuntu
   commands:
-    - export PATH="/drone/home/.meteor:$PATH"
-    - apt update && apt install curl bzip2 -y
-    - mkdir /drone/build
-    - export METEOR_PROFILE=1000
-    - meteor build --server-only --directory --debug /drone/build
-
-services:
-- name: mongo
-  image: mongo:3.2
-  ports:
-  - 27017
-
-volumes:
-- name: meteor
-  temp: {}
+    - whoami
+    - sleep 10
+    - date
+  depends_on:
+    - deploy
