@@ -16,7 +16,7 @@ steps:
     - curl https://install.meteor.com | sed s/--progress-bar/-sL/g | /bin/sh
 
 - name: Test Mongo Test
-  image: node:8.11
+  image: node:8.11-stretch
   environment:
     TEST_MODE: "true"
     MONGO_URL: mongodb://mongo32:27017/rocketchat
@@ -102,7 +102,7 @@ steps:
     - Lint
 
 - name: Meteor build
-  image: node:8.11
+  image: node:8.11-stretch
   volumes:
   - name: meteor
     path: /drone/home
@@ -123,7 +123,7 @@ steps:
     - Unit test
 
 - name: Test Mongo 3.2
-  image: node:8.11
+  image: node:8.11-stretch
   environment:
     TEST_MODE: "true"
     MONGO_URL: mongodb://mongo32:27017/rocketchat
@@ -145,7 +145,7 @@ steps:
     - Meteor build
 
 - name: Test Mongo 4.0
-  image: node:8.11
+  image: node:8.11-stretch
   environment:
     TEST_MODE: "true"
     MONGO_URL: mongodb://mongo40:27017/rocketchat
