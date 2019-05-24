@@ -16,7 +16,7 @@ steps:
     - curl https://install.meteor.com | sed s/--progress-bar/-sL/g | /bin/sh
 
 - name: Start replicas
-  image: ubuntu
+  image: debian:stretch
   commands:
     - echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | tee /etc/apt/sources.list.d/mongodb-org-4.0.list
     - apt-get update && apt-get install -y mongodb-org-shell
