@@ -131,8 +131,6 @@ steps:
     - echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | tee /etc/apt/sources.list.d/google.list
     - echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | tee /etc/apt/sources.list.d/mongodb-org-4.0.list
     - apt-get update && apt-get install -y mongodb-org-shell google-chrome-stable
-    - 'mongo --host mongo32 --eval ''rs.initiate({_id:"rs0", members: [{"_id":1, "host":"localhost:27017"}]})'''
-    - mongo --host mongo32 --eval 'rs.status()'
     - npm install
     - for i in $(seq 1 5); do mongo --host mongo32 rocketchat --eval 'db.dropDatabase()' && npm test && s=0 && break || s=$? && sleep 1; done; (exit $s)
   depends_on:
@@ -153,8 +151,6 @@ steps:
     - echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | tee /etc/apt/sources.list.d/google.list
     - echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | tee /etc/apt/sources.list.d/mongodb-org-4.0.list
     - apt-get update && apt-get install -y mongodb-org-shell google-chrome-stable
-    - 'mongo --host mongo40 --eval ''rs.initiate({_id:"rs0", members: [{"_id":1, "host":"localhost:27017"}]})'''
-    - mongo --host mongo40 --eval 'rs.status()'
     - npm install
     - for i in $(seq 1 5); do mongo --host mongo40 rocketchat --eval 'db.dropDatabase()' && npm test && s=0 && break || s=$? && sleep 1; done; (exit $s)
   depends_on:
