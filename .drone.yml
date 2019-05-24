@@ -171,11 +171,13 @@ services:
   image: mongo:3.2
   ports:
   - 27017
+  command: [mongod, --noprealloc, --smallfiles, --replSet=rs0]
 
 - name: mongo40
   image: mongo:4.0
   ports:
   - 27017
+  command: [mongod, --noprealloc, --smallfiles, --replSet=rs0]
 
 volumes:
 - name: meteor
