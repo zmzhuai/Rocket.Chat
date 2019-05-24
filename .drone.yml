@@ -15,6 +15,18 @@ steps:
     - if [ ! -e "/drone/home/.meteor" ]; then export HOME=/drone/home; curl https://install.meteor.com | sed s/--progress-bar/-sL/g | /bin/sh; fi
     - curl https://install.meteor.com | sed s/--progress-bar/-sL/g | /bin/sh
 
+- name: Start replicas
+  image: ubuntu
+  commands:
+    - echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+    - apt-get update && apt-get install -y mongodb-org-shell
+    - 'mongo --host mongo40 --eval ''rs.initiate({_id:"rs0", members: [{"_id":1, "host":"localhost:27017"}]})'''
+    - mongo --host mongo40 --eval 'rs.status()'
+    - 'mongo --host mongo32 --eval ''rs.initiate({_id:"rs0", members: [{"_id":1, "host":"localhost:27017"}]})'''
+    - mongo --host mongo32 --eval 'rs.status()'
+  depends_on:
+    - Install Meteor
+
 - name: Show versions
   image: ubuntu
   volumes:
@@ -31,7 +43,7 @@ steps:
     - meteor npm --versions
     - meteor node -v
   depends_on:
-    - Install Meteor
+    - Start replicas
 
 - name: Npm install
   image: ubuntu
